@@ -1,0 +1,33 @@
+# 源社区每日签到
+name: src.top Sign
+
+on:
+  schedule:
+    # UTC 01:00 ≈ 北京时间 09:00
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+
+jobs:
+  sign:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run sign-in
+        env:
+          SRC_COOKIE: ${{ secrets.SRC_COOKIE }}
+          # 可选：Cookie 失效时的回退账号密码（需在 Secrets 配置）
+          SRC_USERNAME: ${{ secrets.SRC_USERNAME }}
+          SRC_PASSWORD: ${{ secrets.SRC_PASSWORD }}
+          SRC_LOG_LEVEL: INFO
+        run: python sign.py
