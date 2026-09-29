@@ -156,13 +156,13 @@ SRC_BASE_URL=https://127.0.0.1:9 python sign.py --cookie dummy
 
 ## 安全提示
 
-- 切勿将 `.env` / Cookie / 密码提交到公开仓库（`.env` 已建议加入 `.gitignore`）。
+- 切勿将 `.env` / Cookie / 密码提交到公开仓库（`.env` 已加入 `.gitignore`）。
 - GitHub Actions 请使用 **Secrets** 注入环境变量。
 - 日志会自动脱敏 Cookie 与密码字段。
 
 ## GitHub Actions
 
-workflow 位于 `.github/workflows/sign.yml`，每天 **北京时间 09:00**（UTC 01:00）自动签到，也可在 Actions 页手动触发（`workflow_dispatch`）。
+workflow 位于 `.github/workflows/sign.yml`，每天 **北京时间 09:01**（UTC 01:01）自动签到，也可在 Actions 页手动触发（`workflow_dispatch`）。
 
 ### 配置 Secrets
 

@@ -1,0 +1,10 @@
+# 敏感配置
+.env
+cookies.txt
+.src_cookie_cache
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
