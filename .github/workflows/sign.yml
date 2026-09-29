@@ -3,8 +3,8 @@ name: src.top Sign
 
 on:
   schedule:
-    # UTC 01:00 ≈ 北京时间 09:00
-    - cron: "0 1 * * *"
+    # UTC 01:06 ≈ 北京时间 09:06
+    - cron: "6 1 * * *"
   workflow_dispatch:
 
 jobs:
@@ -20,14 +20,30 @@ jobs:
         with:
           python-version: "3.12"
 
+      # 持久化 Cookie 缓存：账密登录成功后自动更新，下次优先用 Cookie
+      - name: Restore cookie cache
+        uses: actions/cache@v4
+        with:
+          path: .src_cookie_cache
+          key: src-cookie-${{ github.run_id }}
+          restore-keys: |
+            src-cookie-
+
       - name: Install dependencies
         run: pip install -r requirements.txt
 
       - name: Run sign-in
         env:
-          SRC_COOKIE: ${{ secrets.SRC_COOKIE }}
-          # 可选：Cookie 失效时的回退账号密码（需在 Secrets 配置）
+          # 账号密码自动登录（推荐，免手动更新 Cookie）
           SRC_USERNAME: ${{ secrets.SRC_USERNAME }}
           SRC_PASSWORD: ${{ secrets.SRC_PASSWORD }}
+          # 安全提问（账号未设置则留空）
+          SRC_QUESTION_ID: ${{ secrets.SRC_QUESTION_ID }}
+          SRC_ANSWER: ${{ secrets.SRC_ANSWER }}
+          # 可选：Cookie 优先，过期自动回退账密
+          SRC_COOKIE: ${{ secrets.SRC_COOKIE }}
+          # Telegram 推送（可选）
+          SRC_TG_BOT_TOKEN: ${{ secrets.SRC_TG_BOT_TOKEN }}
+          SRC_TG_CHAT_ID: ${{ secrets.SRC_TG_CHAT_ID }}
           SRC_LOG_LEVEL: INFO
         run: python sign.py
