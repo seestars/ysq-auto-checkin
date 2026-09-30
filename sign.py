@@ -491,8 +491,29 @@ _CHALLENGE_MARKERS = ("验证码", "安全提问", "seccode", "secqaa")
 _FAIL_MARKERS = ("没有权限", "禁止", "失败", "错误")
 
 
+def _unwrap_sign_body(body: str) -> str:
+    """剥离 Discuz `format=empty` 的 XML/CDATA 外壳，取出实际消息。
+
+    成功时常见形态：`<?xml ...?><root><![CDATA[]]></root>`（正文为空）。
+    """
+    text = body.strip()
+    if not text:
+        return ""
+    lowered = text[:200].lower()
+    if lowered.startswith("<?xml") or lowered.startswith("<root"):
+        m = re.search(r"<!\[CDATA\[(.*?)\]\]>", text, re.DOTALL)
+        if m:
+            return m.group(1).strip()
+        text = re.sub(r"<\?xml[^>]*\?>", "", text, flags=re.I)
+        text = re.sub(r"</?root\b[^>]*>", "", text, flags=re.I)
+        text = re.sub(r"<!\[CDATA\[(.*?)\]\]>", r"\1", text, flags=re.DOTALL)
+        text = re.sub(r"<[^>]+>", "", text)
+        return text.strip()
+    return text
+
+
 def classify_sign_response(body: str, http_status: int) -> SignResult:
-    text = re.sub(r"\s+", " ", body).strip()
+    text = re.sub(r"\s+", " ", _unwrap_sign_body(body)).strip()
     snippet = text[:200]
 
     if any(m in text for m in _NOT_LOGGED_IN_MARKERS):
