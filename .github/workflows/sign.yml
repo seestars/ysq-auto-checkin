@@ -13,16 +13,16 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       # 持久化 Cookie 缓存：账密登录成功后自动更新，下次优先用 Cookie
       - name: Restore cookie cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           path: .src_cookie_cache
           key: src-cookie-${{ github.run_id }}
