@@ -22,7 +22,7 @@ jobs:
 
       # 持久化 Cookie 缓存：账密登录成功后自动更新，下次优先用 Cookie
       - name: Restore cookie cache
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .src_cookie_cache
           key: src-cookie-${{ github.run_id }}
